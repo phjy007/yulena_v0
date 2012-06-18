@@ -1,0 +1,97 @@
+h4 {
+	display: inline;
+}
+#update_time_title {
+	margin: 5px 0 5px 0;
+}
+
+#main-content h2 {
+	font-size:200%;
+}
+
+#main-content h3 {
+	font-size:150%;
+}
+
+#main-content h4 {
+	font-size:120%;
+}
+
+.content-box-content_charts {
+	height: 330px;
+}
+
+.content-box-content_chart {
+	float: right;
+	margin: 0 15px 0 0;
+}
+
+.content-box-content-contract-analysis {
+	height: 580px;
+}
+#contract_analysis_main_left_frame {
+	float: left;
+	margin: 20px 0 0 20px;
+    border-right: 1px solid #cccccc;
+    padding-right: 20px;
+}
+#contract_analysis_main_right {
+	float: right;
+	margin: 20px 10px 0 0;
+}
+
+#contract_analysis_main_statistic_choice {
+	padding: 10px 0 10px 0;
+}
+
+.fixed-width-970 {
+	width: 1000px;
+	border:1px solid #BBBBBB;
+}
+#specific_data {
+	margin-top: 10px;
+}
+
+#date1 {
+	display: inline;
+}
+#date2 {
+	display: inline;
+}
+
+
+#index_checkin_table {
+    float: left;
+    margin-left: 15px;
+}
+#index_inventory_table {
+    float: left;
+    margin-left: 15px;
+}
+#index_order_table {
+    float: left;
+    margin-left: 15px;
+}
+
+/* style rows on mouseover */
+.x-grid-row-over .x-grid-cell-inner {
+    font-weight: bold;
+    background-color : #ebebff;
+}
+.x-grid-cell-inner {
+    overflow: hidden;
+    padding: 5px;
+    white-space: nowrap;
+}
+
+#target_left_area {
+    float: left;
+    margin: 10px 0 0 12px;
+}
+#target_right_area {
+    float: right;
+    margin: 12px 10px 0 0;
+}
+#pie_chart_area {
+    margin-top: 15px;
+}
