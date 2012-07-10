@@ -5,7 +5,7 @@ Ext.onReady(function() {
 //				Ext.QuickTips.init();
 //				Ext.state.Manager.setProvider(Ext.create('Ext.state.CookieProvider'));
 
-				
+
 				var store_target_pie = Ext.create('Ext.data.Store', {
 					model: pie_data,
                     proxy: {
@@ -18,7 +18,7 @@ Ext.onReady(function() {
 						}
 					}
 				});
-    
+
 //                var store_target_pie = Ext.create('Ext.data.Store', {
 //					model: pie_data,
 //                    data: [
@@ -27,7 +27,7 @@ Ext.onReady(function() {
 //                    ]
 //				});
 //                showPie(store_target_pie);
-    
+
                 store_target_pie.load({
                     params:{  'reason':'',
                                'kehu_name':'',
@@ -236,7 +236,8 @@ function showTargetTable(store_taget_table) {
 						{text: "预计出库时间", width: 80, dataIndex: 'come_out_date', sortable: false},
 						{text: "库存分类", width: 60, dataIndex: 'inventory_kind', sortable: false},
                         {text: "维护日期", width: 80, dataIndex: 'maintain_date', sortable: false},
-						{text: "负责人意见", width: 70,  dataIndex: 'suggestion', sortable: false}
+						{text: "负责人意见", width: 70,  dataIndex: 'suggestion', sortable: false},
+                        {text: "自定义输入", width: 70,  dataIndex: 'suggestion', sortable: false}
 
 					],
 					renderTo:'target_right_area',
