@@ -1,3 +1,3 @@
 Noodles
 -----------------
-version Zero
+version zero
