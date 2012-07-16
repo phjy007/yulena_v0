@@ -1,0 +1,307 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title> 欢迎来到上海电气数据分析系统</title>
+		<!--                       CSS                       -->	  
+		<!-- Reset Stylesheet -->
+		<link rel="stylesheet" href="resources/css/reset.css" type="text/css" media="screen" />
+		<!-- Main Stylesheet -->
+		<link rel="stylesheet" href="resources/css/style.css" type="text/css" media="screen" />
+		<!-- Invalid Stylesheet. This makes stuff look pretty. Remove it if you want the CSS completely valid -->
+		<link rel="stylesheet" href="resources/css/invalid.css" type="text/css" media="screen" />
+		<link rel="stylesheet" href="resources/css/custom.css" type="text/css" media="screen" />	
+		<!-- Colour Schemes
+		Default colour scheme is green. Uncomment prefered stylesheet to use it.
+		<link rel="stylesheet" href="resources/css/blue.css" type="text/css" media="screen" />
+		<link rel="stylesheet" href="resources/css/red.css" type="text/css" media="screen" />  
+		-->
+		<!-- Internet Explorer Fixes Stylesheet -->
+		<!--[if lte IE 7]>
+			<link rel="stylesheet" href="resources/css/ie.css" type="text/css" media="screen" />
+		<![endif]-->
+		<!--                       Javascripts                       -->
+		<!-- jQuery -->
+		<script type="text/javascript" src="resources/scripts/jquery-1.3.2.min.js"></script>
+		<!-- jQuery Configuration -->
+		<script type="text/javascript" src="resources/scripts/simpla.jquery.configuration.js"></script>
+		<!-- Facebox jQuery Plugin -->
+		<script type="text/javascript" src="resources/scripts/facebox.js"></script>
+		<!-- jQuery WYSIWYG Plugin -->
+		<script type="text/javascript" src="resources/scripts/jquery.wysiwyg.js"></script>
+		<!-- jQuery Datepicker Plugin -->
+		<script type="text/javascript" src="resources/scripts/jquery.datePicker.js"></script>
+		<script type="text/javascript" src="resources/scripts/jquery.date.js"></script>
+		<link rel="stylesheet" href="resources/css/ext-4.0.7-gpl/ext-all.css" type="text/css" media="screen" />	
+		<link rel="stylesheet" href="/static/resources/css/custom.css" type="text/css" media="screen" />
+        <script type="text/javascript" src="resources/scripts/ext-4.0.7-gpl/ext-all.js"></script>
+		<script>
+			Ext.onReady(function() {
+				//Ext.MessageBox.alert("!~~~~~~~~~");				
+				Ext.QuickTips.init();
+				// setup the state provider, all state information will be saved to a cookie
+				Ext.state.Manager.setProvider(Ext.create('Ext.state.CookieProvider'));
+
+				var myData = [
+					[1, 	'张三', 	89.9],
+					[2, 	'郑少秋', 	79.9],
+					[3, 	'李显', 	69.9],
+					[4, 	'云中飞', 	59.9],
+					[5, 	'张传奇', 	49.9],
+					[6, 	'费蓉', 	39.9],
+					[7, 	'罗咋舌', 	29.9],
+					[8, 	'程亮', 	29.2],
+					[9, 	'陈炳光', 	19.9],
+					[10, 	'程亮', 	29.2],
+					[11, 	'陈炳光', 	19.9],
+					[12, 	'程亮', 	29.2],
+					[13, 	'陈炳光', 	19.9],
+					[14, 	'程亮', 	29.2],
+					[15, 	'陈炳光', 	19.9],
+					[16, 	'程亮', 	29.2],
+					[17, 	'陈炳光', 	19.9],
+					[18, 	'程亮', 	29.2],
+					[19, 	'陈炳光', 	19.9]
+				];
+
+				var store = Ext.create('Ext.data.ArrayStore', {
+					fields: [
+						{name: 'rank', 		 type: 'int'},
+					    {name: 'name',		 type: 'string'},
+					    {name: 'grade',      type: 'float'}
+					],
+					data: myData
+				});
+				
+				var grid = Ext.create('Ext.grid.Panel', {
+					store: store,
+					stateful: true,
+					stateId: 'stateGrid',
+					columns: [
+						{
+							text     : '排名',
+							flex     : 1,
+							sortable : true,
+							dataIndex: 'rank'
+						},
+						{
+							text     : '销售员',
+							flex     : 1, 
+							sortable : false,
+							dataIndex: 'name'
+						},
+						{
+							text     : '库存额',
+							//width    : 75, 
+							sortable : true,
+							//renderer : 'usMoney',
+							dataIndex: 'grade'
+						}
+					],
+					height: 520,
+					width: 270,
+					title: '应收分析表',
+					renderTo: 'contract_analysis_main_left',
+					viewConfig: {
+						stripeRows: true
+					}
+				});
+				
+				Ext.define('checkin',{
+					extend: 'Ext.data.Model',
+					fields: [
+						// set up the fields mapping into the xml doc
+						// The first needs mapping, the others are very basic
+						{name: 'contract_no', mapping: 'ItemAttributes > Author'},
+						'money', 'user', 'come_in_time', 'out_time', 'reason', 'is_over_three_month', 'is_in_three_month'
+					]
+				});
+
+				var store = Ext.create('Ext.data.Store', {
+					model: 'checkin',
+					autoLoad: false,
+					proxy: {
+						// load using HTTP
+						type: 'ajax',
+						url: 'kucun.json',
+						// the return will be XML, so lets set up a reader
+						reader: {
+							type: 'json',
+							// records will have an "Item" tag
+							record: 'Item',
+							idProperty: 'ASIN',
+							totalRecords: '@total'
+						}
+					}
+				});
+
+				var grid = Ext.create('Ext.grid.Panel', {
+					store: store,
+					columns: [
+						{text: "合同号", width: 50, dataIndex: 'Author', sortable: true},
+						{text: "应收款金额", width: 80, dataIndex: 'Title', sortable: true},
+						{text: "用户",  dataIndex: 'Manufacturer', sortable: true},
+						{text: "开票时间", width: 70, dataIndex: 'ProductGroup', sortable: true},
+						{text: "未到期应收款", width: 80, dataIndex: 'out_time', sortable: true},
+						{text: "到期应收款", width: 70, dataIndex: 'reason', sortable: true},
+						{text: "3个月以上", width: 60,  dataIndex: 'ProductGroup', sortable: false},
+						{text: "3个月以内", width: 60, dataIndex: 'is_in_three_month', sortable: false},
+						{text: "预计收款时间", width: 80, dataIndex: 'come_in_time', sortable: true}
+					],
+					renderTo:'specific_data',
+					width: 650,
+					height: 485
+				});
+		});
+		</script>
+		
+		<!--[if IE]><script type="text/javascript" src="resources/scripts/jquery.bgiframe.js"></script><![endif]-->
+		<!-- Internet Explorer .png-fix -->
+		<!--[if IE 6]>
+			<script type="text/javascript" src="resources/scripts/DD_belatedPNG_0.0.7a.js"></script>
+			<script type="text/javascript">
+				DD_belatedPNG.fix('.png_bg, img, li');
+			</script>
+		<![endif]-->
+		
+	</head>
+  
+	<body>
+	<div id="body-wrapper"> <!-- Wrapper for the radial gradient background -->
+		<div id="sidebar"><div id="sidebar-wrapper"> <!-- Sidebar with logo and menu -->
+			<h1 id="sidebar-title"><a href="#">Simpla Admin</a></h1>
+			<!-- Logo (221px wide) -->
+			<a href="#"><img id="logo" src="resources/images/logo.png" alt="Simpla Admin logo" /></a>
+			<!-- Sidebar Profile links -->
+			<div id="profile-links">
+				您好, 欢迎来到上海电气数据分析系统<br />
+				<br />
+				<a href="#" title="Sign Out">退出</a>
+			</div>        
+			<ul id="main-nav">  <!-- Accordion Menu -->
+				<li>
+					<a href="jiameng.html" class="nav-top-item no-submenu"> <!-- Add the class "no-submenu" to menu items with no sub menu -->
+						首页
+					</a>           
+				</li>
+				<li> 
+					<a href="#" class="nav-top-item"> <!-- Add the class "current" to current menu item -->
+						办事处合同分析
+					</a>
+				</li>
+				<li>
+					<a href="#" class="nav-top-item">
+						办事处库存分析
+					</a>
+					<ul>
+						<li><a href="#">业务员</a></li>
+                        <li><a href="#">客户</a></li>
+						
+					</ul>
+				</li>
+				<li>
+					<a href="#" class="nav-top-item">
+						办事处应收分析
+					</a>
+					<ul>
+						<li><a href="#">业务员</a></li>
+                        <li><a href="#">客户</a></li>
+						
+					</ul>
+				</li>
+				<li>
+					<a href="#" class="nav-top-item">
+						办事处指标分析
+					</a>
+				</li>
+				<li>
+					<a href="#" class="nav-top-item current">
+						办事处当月计划
+					</a>
+				</li>
+			</ul> <!-- End #main-nav -->
+			
+			<div id="messages" style="display: none"> <!-- Messages are shown when a link with these attributes are clicked: href="#messages" rel="modal"  -->
+				<h3>联系方式</h3>
+				<p>
+					<strong>电话：021-50432911</strong> <br />
+					<small><a href="#" class="remove-link" title="网站">网站www.yulena.com</a></small>
+				</p>
+				<p>
+					<strong>Email</strong> epingmi@gmail.com<br />
+				</p>
+			</div> <!-- End #messages -->
+            <div id="messages2" style="display: none"> <!-- Messages are shown when a link with these attributes are clicked: href="#messages" rel="modal"  -->
+				<h3>查看网站建立时间</h3>
+				<p>
+					<strong>2012年5月1日</strong> <br />
+				</p>
+			</div> <!-- End #messages -->	
+		</div>
+	</div> <!-- End #sidebar -->
+		
+	<div id="main-content"> <!-- Main Content Section with everything -->
+		<noscript> <!-- Show a notification if the user has disabled javascript -->
+			<div class="notification error png_bg">
+				<div>
+					如果遇到问题，请联系工作人员 <a href="#"  target="_blank" title="联系客服">工作人员</a>
+				</div>
+			</div>
+		</noscript>
+		<!-- Page Head -->
+		<h2>XX办事处管理分析</h2>
+		<p id="update_time_title">更新时间：<span id="update_time_time">2012-5-4</span></p>
+			
+		<div class="clear"></div> <!-- End .clear -->
+
+			<div class="content-box column-all fixed-width-970">
+				<div class="content-box-header">
+					<h3>办事处计划分析</h3>
+				</div> <!-- End .content-box-header -->
+				<div class="content-box-content-contract-analysis">
+					<div class="tab-content default-tab">
+						<div id="contract_analysis_main_left">
+							
+						</div>
+						<div id="contract_analysis_main_right">
+							<div id="contract_analysis_main_right_statistic">
+								<div id="contract_analysis_main_right_statistic_choice">
+									<select name="dropdown">
+										<option value="option1">郑少秋</option>
+										<option value="option1">曾照杨</option>
+										<option value="option2">陈怡恬</option>
+										<option value="option3">季剑锋</option>
+									</select>
+									<select name="dropdown">
+										<option value="option1">收款</option>
+										<option value="option1">发货</option>
+									</select>
+									<a class="button" href="#">确定</a>
+								</div>
+							</div>
+
+							<div id="specific_data">
+								
+							</div>
+						</div>
+					</div> <!-- End #tab3 -->        
+				</div> <!-- End .content-box-content -->
+			</div> <!-- End .content-box -->
+			
+			
+                      
+			<div class="clear"></div>
+			
+			<div id="footer">
+				<small> <!-- Remove this notice or replace it with whatever you want -->
+						&#169; Copyright 2012 上海电气 | Powered by <a href="http://yulena.com" target="_blank" title="越联科技"> yulena</a> | <a href="#">Top</a>
+				</small>
+			</div><!-- End #footer -->
+			
+		</div> <!-- End #main-content -->
+		
+	</div></body>
+<!-- Download From www.exet.tk-->
+</html>

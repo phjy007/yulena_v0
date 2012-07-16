@@ -1,0 +1,400 @@
+#-*-  coding:UTF-8  -*-
+import xlrd,datetime
+from decimal import Decimal
+from django.shortcuts import render
+from yulena.models import *
+import string
+
+# 时间处理函数，主要将excel表里的时间转成python的datetime类
+__s_date = datetime.date(1899, 12, 31).toordinal()- 1
+def getdate(date):
+    if  isinstance(date, (str)):
+        return datetime.datetime.now().strftime("%Y-%m-%d")
+        e.today().strftime("%Y-%m-%d")
+    if  isinstance(date, float):
+        date = int(date)
+    d = datetime.date.fromordinal(__s_date + date)
+    return d.strftime("%Y-%m-%d")
+
+def gettime(date):
+    if  isinstance(date, (str)):
+        return datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+    d = datetime.date.fromordinal(__s_date + int(date))
+    date = date - int(date)
+    date = date * 3600 * 24
+    t = datetime.time(int(date/3600),int((date%3600)/60))
+    d = datetime.datetime.combine(d,t)
+    return d.strftime("%Y-%m-%d %H:%M")
+# 时间处理函数，主要将excel表里的时间转成python的datetime类
+
+def deal(x):
+    if  isinstance(x, (float)):
+        return Decimal(x)
+    else:
+        return Decimal(0)
+  
+
+def dodelete ():    
+    ysyy.objects.all().delete()
+    kcyy.objects.all().delete()
+    yewuyuan.objects.all().delete()
+    yingshou.objects.all().delete()
+    kucun.objects.all().delete()
+    kehu.objects.all().delete()
+    plan.objects.all().delete()
+    gldata = glvar.objects.get(id=1)
+    gldata.uptimes = gldata.uptimes + 1;
+    gldata.updatetime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+    gldata.save()
+    yewuyuan(name=u'全部').save()
+    tmp = kehu(name=u'全部').save()
+    ysyy(name=u'全部').save()
+    kcyy(name=u'全部').save()
+
+def readdd():
+    book = xlrd.open_workbook(r'D:\sales\excel\dd.xls')
+    sheet = book.sheet_by_index(0)
+    for i in range(1,sheet.ncols):
+        myname = sheet.cell_value(0,i)
+        try:
+            ywy = yewuyuan.objects.get(name=myname)
+        except yewuyuan.DoesNotExist:
+            ywy = yewuyuan(name=myname)
+        if ywy.dingdan_plan == 0:
+            tmp = plan(y = deal(sheet.cell_value(1,i)))
+            tmp.save()
+            ywy.dingdan_plan = tmp.id
+            ywy.save()
+        else:
+            tmp = plan.objects.get(id=ywy.dingdan_plan)
+        tmp.y = deal(sheet.cell_value(1,i))
+        tmp.m1 = deal(sheet.cell_value(2,i))
+        tmp.m2 = deal(sheet.cell_value(3,i))
+        tmp.m3 = deal(sheet.cell_value(4,i))
+        tmp.m4 = deal(sheet.cell_value(5,i))
+        tmp.m5 = deal(sheet.cell_value(6,i))
+        tmp.m6 = deal(sheet.cell_value(7,i))
+        tmp.m7 = deal(sheet.cell_value(8,i))
+        tmp.m8 = deal(sheet.cell_value(9,i))
+        tmp.m9 = deal(sheet.cell_value(10,i))
+        tmp.m10 = deal(sheet.cell_value(11,i))
+        tmp.m11 = deal(sheet.cell_value(12,i))
+        tmp.m12 = deal(sheet.cell_value(13,i))
+        tmp.save()
+        sum = 0
+        for j in range(2,14):
+            sum = sum + deal(sheet.cell_value(j,i))
+        ywy.dingdan_now = sum
+        ywy.dingdan_year = deal(sheet.cell_value(1,i))
+        ywy.save()
+        qb = yewuyuan.objects.get(name=u'全部')
+        qb.dingdan_now = qb.dingdan_now + ywy.dingdan_now
+        qb.dingdan_year = qb.dingdan_year + ywy.dingdan_year
+        qb.save()
+
+def readys():
+    book = xlrd.open_workbook(r'D:\sales\excel\ys.xls')
+    sheet = book.sheet_by_index(0)
+    for i in range(1,sheet.nrows):
+        ys = yingshou(
+                    wd = sheet.cell_value(i,0),#models.CharField(max_digits=520)
+                    # A 1 网点
+                    yh = sheet.cell_value(i,1),#models.CharField(max_digits=220)
+                    # B 2 用户
+                    zzyh = sheet.cell_value(i,2),#models.CharField(max_digits=220)
+                    # C 3 最终用户
+                    hy = sheet.cell_value(i,3),#models.CharField(max_digits=220)
+                    # D 4 行业
+                    ywy = sheet.cell_value(i,4),#models.CharField(max_digits=220)
+                    # E 5 业务员
+                    hth = sheet.cell_value(i,5),#models.CharField(max_digits=220)
+                    # F 6 合同号
+                    ysye = deal(sheet.cell_value(i,6)),#models.DecimalField(max_digits=18,decimal_places=5) 
+                    # G 7 应收余额
+                    ysws = deal(sheet.cell_value(i,7)),#models.DecimalField(max_digits=18,decimal_places=5) 
+                    # H 8 应收未收
+                    kprq = getdate(sheet.cell_value(i,8)),#models.DateField()
+                    # I 9 开票日期
+                    ysfl = sheet.cell_value(i,9),#models.CharField(max_digits=220)
+                    # J 10 应收分类
+                    yyfx = sheet.cell_value(i,10),#models.CharField(max_digits=520)
+                    # K 11 原因分析
+                    yyfl = sheet.cell_value(i,11),#models.CharField(max_digits=220)
+                    # L 12 原因分类
+                    yjysrq = getdate(sheet.cell_value(i,12)),#models.DateField()
+                    # M 13 预计应收日期
+                    bmfgfzr = sheet.cell_value(i,13),#models.CharField(max_digits=50)
+                    # N 14 部门分管责任人
+                    bmfgfzryj = sheet.cell_value(i,14),#models.CharField(max_digits=520)
+                    # O 15 部门分管负责人意见
+                    bmclyj = sheet.cell_value(i,15),#models.CharField(max_digits=520)
+                    # P 16 部门处理意见
+                    ysbz = sheet.cell_value(i,16),#models.CharField(max_digits=520)
+                    # Q 17 应收备注
+                    whrq = gettime(sheet.cell_value(i,17)))#models.DateTimeField()
+                    # R 18 维护日期
+        ys.save()
+        try:
+            ywy = yewuyuan.objects.get(name=sheet.cell_value(i,4))
+        except yewuyuan.DoesNotExist:
+            ywy = yewuyuan(name=sheet.cell_value(i,4))
+        ywy.yingshou = ywy.yingshou + deal(sheet.cell_value(i,6))
+        ywy.save()
+        try:
+            kh = kehu.objects.get(name=sheet.cell_value(i,1))
+        except kehu.DoesNotExist:
+            kh = kehu(name=sheet.cell_value(i,1))
+        kh.yingshou = kh.yingshou + deal(sheet.cell_value(i,6))
+        kh.save()
+        qb = yewuyuan.objects.get(name=u'全部')
+        qb.yingshou = qb.yingshou + deal(sheet.cell_value(i,6))
+        qb.save()
+        qb = kehu.objects.get(name=u'全部')
+        qb.yingshou = qb.yingshou + deal(sheet.cell_value(i,6))
+        qb.save()
+	try:
+            tmp = ysyy.objects.get(name=sheet.cell_value(i,11))
+        except ysyy.DoesNotExist:
+            ysyy(name=sheet.cell_value(i,11)).save()
+
+
+def readkc ():
+    book = xlrd.open_workbook(r'D:\sales\excel\kc.xls')
+    sheet = book.sheet_by_index(0)
+    for i in range(1,sheet.nrows):
+        kc = kucun(
+                    wd = sheet.cell_value(i,0),#models.CharField(max_digits=50) 
+                    # A 1 网点
+                    yh = sheet.cell_value(i,1),#models.CharField(max_digits=220)
+                    # B 2 用户
+                    zzyh = sheet.cell_value(i,2),#models.CharField(max_digits=220)
+                    # C 3 最终用户
+                    hy = sheet.cell_value(i,3),#models.CharField(max_digits=220)
+                    # D 4 行业
+                    ywy = sheet.cell_value(i,4),#models.CharField(max_digits=50)
+                    # E 5 业务员 
+                    hth = sheet.cell_value(i,5),#models.CharField(max_digits=220)
+                    # F 6 合同号
+                    gzh = sheet.cell_value(i,6),#models.CharField(max_digits=220)
+                    # G 7 工作号
+                    dqkcs = int(deal(sheet.cell_value(i,7))),#models.IntegerField()
+                    # H 8 当前库存数
+                    kcje = deal(sheet.cell_value(i,8)),#models.DecimalField(max_digits=18,decimal_places=5) 
+                    # I 9 库存金额
+                    zhrkrq = getdate(sheet.cell_value(i,9)),#models.DateField()
+                    # J 10 最后入库日期
+                    ykwtje = deal(sheet.cell_value(i,10)),#models.DecimalField(max_digits=18,decimal_places=5) 
+                    # K 11 已开未提金额
+                    kcfl = sheet.cell_value(i,11),#models.CharField(max_digits=220)
+                    # L 12 库存分类
+                    yyfx = sheet.cell_value(i,12),#models.CharField(max_digits=520)
+                    # M 13 原因分析
+                    yyfl = sheet.cell_value(i,13),#models.CharField(max_digits=220)
+                    # N 14 原因分类
+                    yjckrq = getdate(sheet.cell_value(i,14)),#models.DateField()
+                    # O 15 预计出库日期
+                    bmfgfzr = sheet.cell_value(i,15),#models.CharField(max_digits=220)
+                    # P 16 部门分管负责人
+                    bmfgfzryj = sheet.cell_value(i,16),#models.CharField(max_digits=520)
+                    # Q 17 部门分管负责人意见
+                    bmclyj = sheet.cell_value(i,17),#models.CharField(max_digits=520)
+                    # R 18 部门处理意见
+                    kcbz = sheet.cell_value(i,18),#models.CharField(max_digits=520)
+                    # S 19 库存备注
+                    whrq = gettime(sheet.cell_value(i,19)))#models.DateTimeField()
+                    # T 20 维护日期
+        kc.save()
+        try:
+            ywy = yewuyuan.objects.get(name=sheet.cell_value(i,4))
+        except yewuyuan.DoesNotExist:
+            ywy = yewuyuan(name=sheet.cell_value(i,4))
+        ywy.kucun = ywy.kucun + deal(sheet.cell_value(i,8))
+        ywy.save()
+        try:
+            kh = kehu.objects.get(name=sheet.cell_value(i,1))
+        except kehu.DoesNotExist:
+            kh = kehu(name=sheet.cell_value(i,1))
+        kh.kucun = kh.kucun + deal(sheet.cell_value(i,8))
+        kh.save()
+        qb = yewuyuan.objects.get(name=u'全部')
+        qb.kucun = qb.kucun + deal(sheet.cell_value(i,8))
+        qb.save()
+        qb = kehu.objects.get(name=u'全部')
+        qb.kucun = qb.kucun + deal(sheet.cell_value(i,8))
+        qb.save()
+    	try:
+            tmp = kcyy.objects.get(name=sheet.cell_value(i,13))
+        except kcyy.DoesNotExist:
+            kcyy(name=sheet.cell_value(i,13)).save()
+    
+
+
+def update():
+    dodelete()
+    readdd()
+    readkc()
+    readys()
+
+def showkc(request):
+    users = yewuyuan.objects.filter(kucun__gt=0).order_by('-kucun')
+    results = kucun.objects.all().order_by('-kcje')
+    delta = datetime.date.today()-datetime.timedelta(days=90)
+    theuser = yewuyuan.objects.get(name=u'全部')
+    if 'chioce' in request.REQUEST:
+        if request.REQUEST.get('chioce')!=u'全部':
+            results = kucun.objects.filter(ywy=request.REQUEST.get('chioce')).order_by('-kcje')
+            theuser = yewuyuan.objects.get(name=request.REQUEST.get('chioce'))
+    inthree = 0
+    outthree = 0
+    for item in results:
+        if item.zhrkrq > delta :
+            inthree = inthree + item.kcje
+        else:
+            outthree = outthree + item.kcje
+    return render(request,'showkc.html',{'inthree':inthree,'outthree':outthree,'delta':delta,'users':users,'results':results,'theuser':theuser})
+
+def showys(request):
+    users = yewuyuan.objects.filter(yingshou__gt=0).order_by('-yingshou')
+    nowtime = datetime.date.today()
+    futime = nowtime+datetime.timedelta(days=90)
+    results = yingshou.objects.all().order_by('ysye')
+    theuser = yewuyuan.objects.get(name=u'全部')
+    if 'chioce' in request.REQUEST:
+        if request.REQUEST.get('chioce')!=u'全部':
+            results = yingshou.objects.filter(ywy=request.REQUEST.get('chioce')).order_by('-ysye')
+            theuser = yewuyuan.objects.get(name=request.REQUEST.get('chioce'))
+    
+    inthree = 0
+    outthree = 0
+    for item in results:
+        if item.yjysrq <= nowtime :
+            inthree = inthree + item.ysye
+        else:
+            outthree = outthree + item.ysye
+    return render(request,'showys.html',{'inthree':inthree,'outthree':outthree,'futime':futime,'nowtime':nowtime,'users':users,'results':results,'theuser':theuser})
+
+
+
+def showdd(request):
+    results = yewuyuan.objects.filter(dingdan_now__gt=0).order_by('-dingdan_now')
+    special = yewuyuan.objects.get(name=u'全部')
+    if request.REQUEST.get('user'):
+        special = yewuyuan.objects.get(name=request.REQUEST.get('user'))
+    return render(request,'showdd.html',{'results':results,'special':special})
+
+def showysfx(request):
+    rankywy = yewuyuan.objects.filter(yingshou__gt=0).order_by('-yingshou')
+    rankkh = kehu.objects.filter(yingshou__gt=0).order_by('-yingshou')
+    ysyys = ysyy.objects.all()
+    results = yingshou.objects.all()
+    if request.method == 'POST':
+        if request.REQUEST.get('ywyname') != u'全部':
+	    results = results.filter(ywy = request.REQUEST.get('ywyname'))
+	print request.REQUEST.get('khname')
+        if request.REQUEST.get('khname') != u'全部':
+	    results = results.filter(yh=request.REQUEST.get('khname'))
+        if request.REQUEST.get('yyname') != u'全部':
+	    results = results.filter(yyfl = request.REQUEST.get('yyname'))
+	yjy = request.REQUEST.get('yjtimey')
+	yjm = request.REQUEST.get('yjtimem')
+	yjd = request.REQUEST.get('yjtimed')
+	print yjy,' ',yjm,' ',yjd
+	if not(yjy == 'yyyy' or yjm == 'mm' or yjd == 'dd'):
+	    yjy = string.atoi(yjy)
+	    yjm = string.atoi(yjm)
+            yjd = string.atoi(yjd)
+            yjtime = datetime.date(yjy,yjm,yjd)
+	    print 'yjtime:',yjtime
+	    results = results.filter(yjysrq__lte=yjtime)
+        why = request.REQUEST.get('whtimey')
+        whm = request.REQUEST.get('whtimem')
+	whd = request.REQUEST.get('whtimed')
+	if not(why == 'yyyy' or whm == 'mm' or whd =='dd'):
+	    why = string.atoi(why)
+	    whm = string.atoi(whm)
+            whd = string.atoi(whd)
+	    whtime = datetime.datetime(why,whm,whd,0,0)
+	    print 'whtime:',whtime
+	    results = results.filter(whrq__lte=whtime)
+	delta = request.REQUEST.get('zlday')
+	if delta != u'days':
+	    print 'delta:',delta
+	    delta = string.atoi(delta)
+	    zltime = datetime.date.today() - datetime.timedelta(days=delta)
+	    results = results.filter(kprq__lt=zltime)
+    totol = results.extra(select={'totol':'sum(ysye)'}).values('totol') 
+    return render(request,'showysfx.html',{'totol':totol,'rankkh':rankkh,'rankywy':rankywy,'ysyys':ysyys,'results':results})
+
+def showkcfx(request):
+    rankywy = yewuyuan.objects.filter(kucun__gt=0).order_by('-kucun')
+    rankkh = kehu.objects.filter(kucun__gt=0).order_by('-kucun')
+    kcyys = kcyy.objects.all()
+    results = kucun.objects.all()
+    if request.method == 'POST':
+        if request.REQUEST.get('ywyname') != u'全部':
+	    results = results.filter(ywy = request.REQUEST.get('ywyname'))
+	print request.REQUEST.get('khname')
+        if request.REQUEST.get('khname') != u'全部':
+	    results = results.filter(yh=request.REQUEST.get('khname'))
+        if request.REQUEST.get('yyname') != u'全部':
+	    results = results.filter(yyfl = request.REQUEST.get('yyname'))
+	yjy = request.REQUEST.get('yjtimey')
+	yjm = request.REQUEST.get('yjtimem')
+	yjd = request.REQUEST.get('yjtimed')
+	print yjy,' ',yjm,' ',yjd
+	if not(yjy == 'yyyy' or yjm == 'mm' or yjd == 'dd'):
+	    yjy = string.atoi(yjy)
+	    yjm = string.atoi(yjm)
+            yjd = string.atoi(yjd)
+            yjtime = datetime.date(yjy,yjm,yjd)
+	    print 'yjtime:',yjtime
+	    results = results.filter(yjckrq__lte=yjtime)
+        why = request.REQUEST.get('whtimey')
+        whm = request.REQUEST.get('whtimem')
+	whd = request.REQUEST.get('whtimed')
+	if not(why == 'yyyy' or whm == 'mm' or whd =='dd'):
+	    why = string.atoi(why)
+	    whm = string.atoi(whm)
+            whd = string.atoi(whd)
+	    whtime = datetime.datetime(why,whm,whd,0,0)
+	    print 'whtime:',whtime
+	    results = results.filter(whrq__lte=whtime)
+	delta = request.REQUEST.get('zlday')
+	if delta != u'days':
+	    print 'delta:',delta
+	    delta = string.atoi(delta)
+	    zltime = datetime.date.today() - datetime.timedelta(days=delta)
+	    results = results.filter(zhrkrq__lt=zltime)
+    totol = results.extra(select={'totol':'sum(kcje)'}).values('totol') 
+    return render(request,'showkcfx.html',{'totol':totol,'rankkh':rankkh,'rankywy':rankywy,'kcyys':kcyys,'results':results})
+
+def showmain(request):
+    print request.REQUEST.get('test')
+    try:
+        gldata = glvar.objects.get(id=1)
+    except glvar.DoesNotExist:
+	ysyy(name=u'全部').save()
+	kcyy(name=u'全部').save()
+        gldata = glvar(updatetime=datetime.datetime.now().strftime("%Y-%m-%d %H:%M"),
+                       uptimes=0,
+                       zhibiao_now=50,
+                       zhibiao_year=50,
+                       zhibiao_month=50)
+        gldata.save()
+    if request.REQUEST.get('update')==u'更新' :
+        update()
+    try:
+        ywy = yewuyuan.objects.get(name=u'全部')
+    except yewuyuan.DoesNotExist:
+        return render(request,'errer.html',{'message':u'没有相关信息，请更新'})
+    
+    special1 = ywy.yingshou-ywy.yingshou_lastmonth
+    special2 = ywy.yingshou-ywy.yingshou_lastyear
+    special3 = ywy.kucun-ywy.kucun_lastmonth
+    special4 = ywy.kucun-ywy.kucun_lastyear
+    
+    return render(request,'index.html',{'special1':special1,'special2':special2,'special3':special3,'special4':special4,'gldata':gldata,'ywy':ywy})
+    
+    
+    
+    

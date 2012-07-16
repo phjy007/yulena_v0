@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 28
+/svn/!svn/ver/37/trunk/sales
+END
+wsgi.py
+K 25
+svn:wc:ra_dav:version-url
+V 35
+/svn/!svn/ver/2/trunk/sales/wsgi.py
+END
+settings.py.bak
+K 25
+svn:wc:ra_dav:version-url
+V 43
+/svn/!svn/ver/2/trunk/sales/settings.py.bak
+END
+__init__.py
+K 25
+svn:wc:ra_dav:version-url
+V 39
+/svn/!svn/ver/2/trunk/sales/__init__.py
+END
+settings.py
+K 25
+svn:wc:ra_dav:version-url
+V 39
+/svn/!svn/ver/8/trunk/sales/settings.py
+END
+urls.py.bak
+K 25
+svn:wc:ra_dav:version-url
+V 39
+/svn/!svn/ver/2/trunk/sales/urls.py.bak
+END
+urls.py
+K 25
+svn:wc:ra_dav:version-url
+V 36
+/svn/!svn/ver/40/trunk/sales/urls.py
+END

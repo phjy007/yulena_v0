@@ -1,0 +1,289 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title> 欢迎来到上海电气数据分析系统</title>
+		<!--                       CSS                       -->	  
+		<!-- Reset Stylesheet -->
+		<link rel="stylesheet" href="/static/resources/css/reset.css" type="text/css" media="screen" />
+		<!-- Main Stylesheet -->
+		<link rel="stylesheet" href="/static/resources/css/style.css" type="text/css" media="screen" />
+		<!-- Invalid Stylesheet. This makes stuff look pretty. Remove it if you want the CSS completely valid -->
+		<link rel="stylesheet" href="/static/resources/css/invalid.css" type="text/css" media="screen" />
+		<link rel="stylesheet" href="/static/resources/css/custom.css" type="text/css" media="screen" />
+		<!-- Colour Schemes
+		Default colour scheme is green. Uncomment prefered stylesheet to use it.
+		<link rel="stylesheet" href="resources/css/blue.css" type="text/css" media="screen" />
+		<link rel="stylesheet" href="resources/css/red.css" type="text/css" media="screen" />  
+		-->
+		<!-- Internet Explorer Fixes Stylesheet -->
+		<!--[if lte IE 7]>
+			<link rel="stylesheet" href="/static/resources/css/ie.css" type="text/css" media="screen" />
+		<![endif]-->
+		<!--                       Javascripts                       -->
+		<!-- jQuery -->
+		<!--script type="text/javascript" src="/static/resources/scripts/jquery-1.3.2.min.js"></script-->
+		<script type="text/javascript" src="/static/resources/scripts/jquery.js"></script>
+		<!-- jQuery Configuration -->
+		<script type="text/javascript" src="/static/resources/scripts/simpla.jquery.configuration.js"></script>
+		<!-- Facebox jQuery Plugin -->
+		<script type="text/javascript" src="/static/resources/scripts/facebox.js"></script>
+		<!-- jQuery WYSIWYG Plugin -->
+		<script type="text/javascript" src="/static/resources/scripts/jquery.wysiwyg.js"></script>
+		<!-- jQuery Datepicker Plugin -->
+		<script type="text/javascript" src="/static/resources/scripts/jquery.datePicker.js"></script>
+		<script type="text/javascript" src="/static/resources/scripts/jquery.date.js"></script>
+		<script type="text/javascript" src="/static/resources/scripts/ext-4.0.7-gpl/ext-all.js"></script>
+		<script type="text/javascript" src="/static/resources/scripts/ajaxfileupload.js"></script>
+		<!--script type="text/javascript" src="/static/resources/scripts/file_upload.js"></script-->
+		<style type="text/css">
+	        .upload-icon {
+	            background: url('/static/resources/images/image_add.png') no-repeat 0 0 !important;
+	        }
+	        #fi-button-msg {
+	            border: 2px solid #ccc;
+	            padding: 5px 10px;
+	            background: #eee;
+	            margin: 5px;
+	            float: left;
+	        }
+    	</style>
+		<link rel="stylesheet" href="/static/resources/css/ext-4.0.7-gpl/resources/css/ext-all.css" type="text/css" media="screen" />
+		<script type="text/javascript">
+			$(document).ready(function(){
+					
+			});
+
+			function ajaxFileUpload(func_type) {
+				var loading_icon = "#loading_" + func_type;
+		        $(loading_icon)
+		        .ajaxStart(function() {
+		            $(this).show();
+		        })
+		        .ajaxComplete(function() {
+		            $(this).hide();
+		        });
+		        var dest_url = '/updatedata_' + func_type + '/' + $("#updatedata_date_year").val() + "/" + $("#updatedata_date_month").val() + "/";
+	        	var elementId = func_type + '_file_id';
+	        	var myStatus = '#updatedata_files_item_status_' + func_type;
+				$.ajaxFileUpload
+		        (
+		            {
+		                url: dest_url, 
+		                secureuri: false,
+		                fileElementId: elementId,
+		                dataType: 'json',
+		                success: function (data, status) {
+		                    if(typeof(data.error) != 'undefined') {
+		                        if(data.error != '') {
+		                            // alert("1-" + data.error);
+		                        } else {
+		                            // alert("2-" + data.msg);
+		                        }
+		                        $(myStatus).text('已上传').addClass("updatedata_tips");
+		                    }
+		                },
+		                error: function (data, status, e) {
+		                    // alert("3-" + e);
+		                    $(myStatus).text('已上传').addClass("updatedata_tips");
+		                }
+		            }
+		        )
+		        return false;
+		    } 
+		</script>	
+	</head>
+  
+	<body>
+	<div id="body-wrapper"> <!-- Wrapper for the radial gradient background -->
+		<div id="sidebar"><div id="sidebar-wrapper"> <!-- Sidebar with logo and menu -->
+			<h1 id="sidebar-title"><a href="#">Simpla Admin</a></h1>
+			<!-- Logo (221px wide) -->
+			<a href="#"><img id="logo" src="/static/resources/images/logo.png" alt="Simpla Admin logo" /></a>
+			<!-- Sidebar Profile links -->
+			<div id="profile-links">
+				欢迎来到上海电气数据分析系统<br />
+				<br />
+                <!--p id="update_time_title">更新时间：<span id="update_time_time">2012-5-4</span></p-->
+				<a href="/logout" title="Sign Out">退出</a>
+			</div>        
+			<ul id="main-nav">  <!-- Accordion Menu -->
+				<li>
+					<a href="/index" class="nav-top-item no-submenu current"> <!-- Add the class "no-submenu" to menu items with no sub menu -->
+						首页
+					</a>           
+				</li>
+				<li> 
+					<a href="/contract" class="nav-top-item no-submenu"> <!-- Add the class "current" to current menu item -->
+						办事处合同分析
+					</a>
+				</li>
+				<li>
+					<a href="#" class="nav-top-item">
+						办事处库存分析
+					</a>
+					<ul>
+						<li><a href="/inventory">业务员</a></li>
+                        <li><a href="/inventory_kehu">客户</a></li>
+						
+					</ul>
+				</li>
+				<li>
+					<a href="#" class="nav-top-item">
+						办事处应收分析
+					</a>
+					<ul>
+						<li><a href="/checkin">业务员</a></li>
+                        <li><a href="/checkin_kehu">客户</a></li>
+						
+					</ul>
+				</li>
+				<li>
+					<a href="#" class="nav-top-item">
+						办事处指标分析
+					</a>
+					<ul>
+						<li><a href="/target_inventory">库存</a></li>
+                        <li><a href="/target_checkin">应收</a></li>
+
+					</ul>
+				</li>
+				<li>
+					<a href="#" class="nav-top-item">
+						办事处当月计划
+					</a>
+				</li>
+				<li>
+					<a href="/updatedata" class="nav-top-item no-submenu">
+						数据更新
+					</a>
+				</li>
+			</ul> <!-- End #main-nav -->
+			
+			<div id="messages" style="display: none"> <!-- Messages are shown when a link with these attributes are clicked: href="#messages" rel="modal"  -->
+				<h3>联系方式</h3>
+				<p>
+					<strong>电话：021-50432911</strong> <br />
+					<small><a href="#" class="remove-link" title="网站">网站www.yulena.com</a></small>
+				</p>
+				<p>
+					<strong>Email</strong> epingmi@gmail.com<br />
+				</p>
+			</div> <!-- End #messages -->
+            <div id="messages2" style="display: none"> <!-- Messages are shown when a link with these attributes are clicked: href="#messages" rel="modal"  -->
+				<h3>查看网站建立时间</h3>
+				<p>
+					<strong>2012年5月1日</strong> <br />
+				</p>
+			</div> <!-- End #messages -->	
+		</div>
+	</div> <!-- End #sidebar -->
+		
+	<div id="main-content"> <!-- Main Content Section with everything -->
+		<noscript> <!-- Show a notification if the user has disabled javascript -->
+			<div class="notification error png_bg">
+				<div>
+					如果遇到问题，请联系工作人员 <a href="#"  target="_blank" title="联系客服">工作人员</a>
+				</div>
+			</div>
+		</noscript>
+		<!-- Page Head -->
+			
+		<div class="clear"></div> <!-- End .clear -->
+
+			<div class="content-box column-all fixed-width-970">
+				<div class="content-box-header">
+					<h3>数据更新</h3><span id="update_tips">(先设置年月，再数据文件上传到服务器，最后点击更新)</span>
+				</div> 
+				<div class="content-box-content" id="updatedata_frame">
+					<div id="updatedata_date">
+						文件所属的年月：
+						<select id="updatedata_date_year">
+							<option value ="2011">2011</option>
+							<option value ="2012">2012</option>
+							<option value ="2013">2013</option>
+							<option value ="2014">2014</option>
+							<option value ="2015">2015</option>
+							<option value ="2016">2016</option>
+							<option value ="2017">2017</option>
+							<option value ="2018">2018</option>
+							<option value ="2019">2019</option>
+							<option value ="2020">2020</option>
+						</select>
+						年
+						<select id="updatedata_date_month">
+							<option value ="1">1</option>
+							<option value ="2">2</option>
+							<option value ="3">3</option>
+							<option value ="4">4</option>
+							<option value ="5">5</option>
+							<option value ="6">6</option>
+							<option value ="7">7</option>
+							<option value ="8">8</option>
+							<option value ="9">9</option>
+							<option value ="10">10</option>
+							<option value ="11">11</option>
+							<option value ="12">12</option>
+						</select>
+						月
+					</div>
+				    <!-- <div class="updatedata_files_item">
+				    	应收表：<input type="file" name="checkin_file" />
+				    	<a href="#">上传应收表</a>
+				    	<span class="updatedata_files_item_status"></span>
+				    </div>
+					<div class="updatedata_files_item">
+						库存表：<input type="file" name="inventory_file" />
+						<a href="#">上传库存表</a>
+						<span class="updatedata_files_item_status"></span>
+					</div>
+					<div class="updatedata_files_item">
+						订单表：<input type="file" name="order_file" />
+						<a href="#">上传订单表</a>
+						<span class="updatedata_files_item_status"></span>
+					</div>  -->
+					<!-- <div id="fi-form"></div> -->
+					
+					<!-- <form name="form" action="" method="POST" enctype="multipart/form-data">
+
+					</form>
+ -->
+ 					<div class="uploadfiles">
+						<input id="checkin_file_id" name="checkin_file_name" size="40" type="file">
+						<a href="#" id="checkin_file_upload" onclick="return ajaxFileUpload('checkin');">上传应收表</a>
+						<img id="loading_checkin" style="display: none;" src="/static/resources/images/loading2.gif" alt="">
+						<span id="updatedata_files_item_status_checkin" class="updatedata_files_item_status"></span>
+					</div>
+					<div class="uploadfiles">
+						<input id="inventory_file_id" name="inventory_file_name" size="40" type="file">
+						<a href="#" id="inventory_file_upload" onclick="return ajaxFileUpload('inventory');">上传库存表</a>
+						<img id="loading_inventory" style="display: none;" src="/static/resources/images/loading2.gif" alt="">
+						<span id="updatedata_files_item_status_inventory" class="updatedata_files_item_status"></span>
+					</div>
+					<div class="uploadfiles">
+						<input id="order_file_id" name="order_file_name" size="40" type="file">
+						<a href="#" id="order_file_upload" onclick="return ajaxFileUpload('order');">上传订单表</a>
+						<img id="loading_order" style="display: none;" src="/static/resources/images/loading2.gif" alt="">
+						<span id="updatedata_files_item_status_order" class="updatedata_files_item_status"></span>
+					</div>
+					<div class="uploadfiles_update_btn">
+						<a href="#" id="updatedata" onclick="">更 新</a><span id="updatedata_notice"> 上传及更新前请务必确认年月及相应的数据文件</span>
+						<div id="updatedata_status_update" class="updatedata_status"></div>
+					</div>
+
+				</div>
+			</div>
+			
+			<div id="footer">
+				<small> <!-- Remove this notice or replace it with whatever you want -->
+						&#169; Copyright 2012 上海电气 | Powered by <a href="http://yulena.com" target="_blank" title="越联科技"> yulena</a> | <a href="#">Top</a>
+				</small>
+			</div><!-- End #footer -->
+			
+		</div> <!-- End #main-content -->
+		
+	</div></body>
+<!-- Download From www.exet.tk-->
+</html>
